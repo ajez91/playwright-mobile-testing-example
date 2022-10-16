@@ -52,7 +52,7 @@ namespace CouponFollowTests.Tests
         }
 
         [Test, Category("Mobile")]
-        [TestCase("StubHub", TestName = "Validate_Searching_For_Discount - IPhone")]
+        [TestCase("StubHub", TestName = "Validate Searching For Discount - IPhone")]
         public async Task Validate_Searching_For_Discount_IPhone_Test(string merchant)
         {
             await homePage.SearchForDiscountMobile(merchant);
