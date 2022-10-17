@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CouponFollowTests.Pages
 {
@@ -10,7 +11,6 @@ namespace CouponFollowTests.Pages
         public HomePage(IPage page) => Page = page;
 
         #region Locators
-
         private ILocator TopOfferBullet => Page.Locator("span.bullet");
         private ILocator TopCouponActive => Page.Locator(".swiper-slide-active");
         private ILocator TopCouponNext => Page.Locator(".swiper-slide-next");
@@ -25,11 +25,9 @@ namespace CouponFollowTests.Pages
         private ILocator MobileSearchResultTitle => Page.Locator("#site > h1");
         private ILocator MobileSearchResultDiscounts => Page.Locator("#deals");
 
-
         #endregion Locators
 
         #region Methods
-
         private async Task<int> GetTopCouponsBullets() => await TopOfferBullet.CountAsync();
         private async Task<int> GetTrendingCouponMobile() => await TrendingCouponMobile.CountAsync();
         private async Task<int> GetStaffPicks() => await StaffPick.CountAsync();
@@ -44,7 +42,6 @@ namespace CouponFollowTests.Pages
             await InputValueInMobileSearchBox(merchant);
             await ChooseSearchSugestionMobile();
         }
-
 
         #endregion Methods
 
@@ -97,10 +94,10 @@ namespace CouponFollowTests.Pages
 
             return stores.Distinct().Count() == stores.Count();
         }
+
         public async Task<bool> ValidateStaffPicksProperDiscounts()
         {
             List<string> discountTitles = new List<string>();
-            List<string> filterTags = new List<string> { "$", "%", "[a-zA-Z]" }; 
             
             var staffPicks = await GetStaffPicks();
             for (int i = 0; i < staffPicks; i++)
@@ -108,13 +105,11 @@ namespace CouponFollowTests.Pages
                 discountTitles.Add(await StaffPickTitle.Nth(i).TextContentAsync());
             }
 
-            //Verifying if strings are not empty
-            var resultsNotEmpty = discountTitles.Where(d => !string.IsNullOrEmpty(d)).ToList();
+            //Verifying discounts for monetary, percentage or text values
+            Regex pattern = new Regex(@"\$\d+|\d+\%|\w+");
+            var filterResults = discountTitles.Select(d => pattern.IsMatch(d)).ToList();
 
-            //Verifying with filters tag '%' and '$'
-            var resultsFilterTags = resultsNotEmpty.Where(d => filterTags.Any(tag => d.Contains(tag))).ToList();
-
-            return discountTitles.Count() == resultsFilterTags.Count(); 
+            return discountTitles.Count() == filterResults.Count(); 
         }
 
         public async Task<bool> ValidateMobileSearchDiscountResultAreDisplayed() => await MobileSearchResultDiscounts.IsVisibleAsync();
@@ -126,7 +121,6 @@ namespace CouponFollowTests.Pages
 
             return sb.ToString() == await GetMobileSearchResultTitle();
         }
-
 
         #endregion Validations
     }
