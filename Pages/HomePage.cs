@@ -11,6 +11,7 @@ namespace CouponFollowTests.Pages
         public HomePage(IPage page) => Page = page;
 
         #region Locators
+
         private ILocator TopOfferBullet => Page.Locator("span.bullet");
         private ILocator TopCouponActive => Page.Locator(".swiper-slide-active");
         private ILocator TopCouponNext => Page.Locator(".swiper-slide-next");
@@ -28,6 +29,7 @@ namespace CouponFollowTests.Pages
         #endregion Locators
 
         #region Methods
+
         private async Task<int> GetTopCouponsBullets() => await TopOfferBullet.CountAsync();
         private async Task<int> GetTrendingCouponMobile() => await TrendingCouponMobile.CountAsync();
         private async Task<int> GetStaffPicks() => await StaffPick.CountAsync();
