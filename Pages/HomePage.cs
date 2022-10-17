@@ -38,6 +38,7 @@ namespace CouponFollowTests.Pages
         private async Task ChooseSearchSugestionMobile() => await MobileSearchSugestion.ClickAsync();
         private async Task<string> GetMobileSearchResultTitle() => await MobileSearchResultTitle.TextContentAsync();
         public async Task GoToUrl(string url) => await Page.GotoAsync(url);
+
         public async Task SearchForDiscountMobile(string merchant)
         {
             await ClickSearchBox();
